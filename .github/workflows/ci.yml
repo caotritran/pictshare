@@ -33,7 +33,7 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: tritran14/pictshare
-          tags: ${{ SHA8 }}
+          tags: $SHA8
           dockerfile: ./docker/Dockerfile
         env:
           SHA_VAR: ${tag_with_sha}
@@ -56,7 +56,7 @@ jobs:
       - name: sleep 10s
         run: sleep 10
       - name: edit tag variables
-        run: sed -i "s/<VERSION>/${{ SHA8 }}/g" ./deployment/pictshare-deployment.yaml
+        run: sed -i "s/<VERSION>/$SHA8/g" ./deployment/pictshare-deployment.yaml
       - name: deploy to kubernetes
         run: kubectl apply -f ./deployment/pictshare-deployment.yaml
       - name: sleep 10s
