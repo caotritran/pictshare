@@ -1,0 +1,31 @@
+node{
+  //Define all variables
+  def project = 'tritran14'
+  def appName = 'pictshare'
+  //def serviceName = "${appName}-backend"  
+  //def imageVersion = 'development'
+  //def namespace = 'development'
+  def imageTag = "${project}/${appName}:${env.BUILD_NUMBER}"
+  
+  //Checkout Code from Git
+  checkout scm
+  
+  //Stage 1 : Build the docker image.
+  stage('Build image') {
+      def app = sh("docker build --no-cache -t ${imageTag} -f ./docker/Dockerfile .")
+  }
+  
+  //Stage 2 : Push the image to docker registry
+  stage('Push image to registry') {
+      docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+      }
+      sh("docker push ${imageTag}")
+  }
+
+  //Stage 3: Deploy to kubernetes
+  stage('Deploy to kubernetes') {
+      sh("sed -i 's/<VERSION>/${env.BUILD_NUMBER}/g' ./deployment/pictshare-deployment.yaml")
+      sh("kubectl apply -f ./deployment/pictshare-deployment.yaml")
+  }
+
+}
