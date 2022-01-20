@@ -37,7 +37,7 @@ jobs:
           
     
   deploy_to_k8s:
-    name: Minikube-Kubernetes Cluster interaction
+    #name: Minikube-Kubernetes Cluster interaction
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -50,3 +50,11 @@ jobs:
           github token: ${{ secrets.GIT_TOKEN }}
       - name: Interact with the cluster
         run: kubectl get nodes
+      - name: sleep 10s
+        run: sleep 10
+      - name: edit tag variables
+        run: sed -i "s/<VERSION>/${{ github.sha }}/g" ./deployment/pictshare-deployment.yaml
+      - name: deploy to kubernetes
+        run: kubectl apply -f ./deployment/pictshare-deployment.yaml
+      - name: re-check
+        run: kubectl get svc && kubectl get deploy && kubectl get po
