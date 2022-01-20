@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: CI/CD
 
 # Controls when the workflow will run
 on:
@@ -53,7 +53,7 @@ jobs:
       - name: sleep 10s
         run: sleep 10
       - name: edit tag variables
-        run: sed -i "s/<VERSION>/${{ github.sha }}/g" ./deployment/pictshare-deployment.yaml
+        run: sed -i "s/<VERSION>/${{ tag_with_sha }}/g" ./deployment/pictshare-deployment.yaml
       - name: deploy to kubernetes
         run: kubectl apply -f ./deployment/pictshare-deployment.yaml
       - name: sleep 10s
