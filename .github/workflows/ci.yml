@@ -56,5 +56,7 @@ jobs:
         run: sed -i "s/<VERSION>/${{ github.sha }}/g" ./deployment/pictshare-deployment.yaml
       - name: deploy to kubernetes
         run: kubectl apply -f ./deployment/pictshare-deployment.yaml
+      - name: sleep 10s
+        run: sleep 10
       - name: re-check
         run: kubectl get svc && kubectl get deploy && kubectl get po
